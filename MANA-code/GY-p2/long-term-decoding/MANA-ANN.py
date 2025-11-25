@@ -118,7 +118,6 @@ path__stdEmbeddings = base_path + '/standard_embedding'
 path_subpath__modelName = f'/MANAANN'
 
 
-
 print(f"long-term-decoding")
 print(" ")
 

@@ -120,6 +120,19 @@ def main(args=args, configs=configs):
     bin_method = 'expect_bins'
     expect_num_bins = 50
 
+    # if bin_method == 'expect_bins':
+
+    #     all_micro_spikes_concat = torch.load('/home/hanly/Multiscale_SNN_Code/cerba_proc/GY-p2_20221101_20230911/all_micro_spikes_expect_bin_' + str(expect_num_bins) + '_concat_gy-p2_' + data_from_to + '.pt')
+    #     all_macro_conditions_concat = torch.load('/home/hanly/Multiscale_SNN_Code/cerba_proc/GY-p2_20221101_20230911/all_macro_conditions_expect_' + str(expect_num_bins) + '_concat_gy-p2_' + data_from_to + '.pt')
+        
+    #     len_for_each_session_trial = torch.load('/home/hanly/Multiscale_SNN_Code/cerba_proc/GY-p2_20221101_20230911/len_for_each_session_trial_expect_' + str(expect_num_bins) + '_concat_gy-p2_' + data_from_to + '.pt')
+    #     target_for_each_session_trial = torch.load('/home/hanly/Multiscale_SNN_Code/cerba_proc/GY-p2_20221101_20230911/target_for_each_session_trial_expect_' + str(expect_num_bins) + '_concat_gy-p2_' + data_from_to + '.pt')
+        
+    #     # 1-8 ==> 0-7
+    #     all_macro_conditions_concat = all_macro_conditions_concat - torch.tensor(1)
+    #     for i in range(len(target_for_each_session_trial)):
+    #         target_for_each_session_trial[i] = (np.array(target_for_each_session_trial[i]) - 1).tolist()
+
     verify_day_in_test_range(variable_num, cross_week_num, train_weeks)
     domain_dic, day_from_to_dic = generate_domain_dict_and_day_from_to_dict(cross_week_num, train_weeks, method="domains")
 
@@ -201,7 +214,13 @@ def main(args=args, configs=configs):
                 #                                                                 all_macro_conditions_concat,
                 #                                                                 len_for_each_session_trial, Day_from,
                 #                                                                 Day_to)  # direction
-                
+
+                # with open(f'GY-p2/data/data--training-weeks-{train_weeks}.pkl', 'wb') as f:
+                #     pickle.dump((len_for_each_session_trial, target_for_each_session_trial, neural_train.clone(), neural_test.clone(), label_train.clone(), label_test.clone()), f)
+
+
+                # TODO: 如果是4，读long-term-decoding的数据
+
                 with open(f'GY-p2/data/data--training-weeks-{train_weeks}.pkl', 'rb') as f:
                     len_for_each_session_trial, target_for_each_session_trial, neural_train, neural_test, label_train, label_test = pickle.load(f)
                 
