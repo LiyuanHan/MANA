@@ -56,11 +56,15 @@ parser.add_argument('--wd', '--weight-decay', default=5e-4, type=float)
 parser.add_argument('-bm', '--bn-momentum', type=float, default=0.1, help="the batchnorm momentum parameter")
 parser.add_argument("--gpu", default="0", type=str, metavar='GPU plans to use', help='The GPU id plans to use')
 
+parser.add_argument('--variable_num', type=int, help='test day index')
 parser.add_argument('--mix_length', default=28, type=int)
 parser.add_argument('--time_window', default=10, type=int)
 
 args = parser.parse_args()
-variable_num = 24
+
+variable_num = args.variable_num
+assert variable_num in [24, 25, 26, 27, 28, 29, 30]
+
 mix_length = args.mix_length
 time_window = args.time_window
 args.base_path = ''
@@ -164,8 +168,6 @@ def main(args=args, configs=configs):
     # data loading
     bin_method = 'expect_bins'
     expect_num_bins = 50
-    print('bin_method: ', bin_method)
-    print('expect_num_bins: ', expect_num_bins)
 
     # if bin_method == 'expect_bins':
 
@@ -186,10 +188,13 @@ def main(args=args, configs=configs):
 
 
     seed_set = np.array([31, 44, 46, 54, 59])
-    Day_from = day_from_to_dic[str(variable_num)][0] 
-    Day_to = day_from_to_dic[str(variable_num)][1]  
+    # Day_from = day_from_to_dic[str(variable_num)][0] 
+    # Day_to = day_from_to_dic[str(variable_num)][1]  
+    Day_from = 16
+    Day_to = 23
     test_Day_list = [variable_num]  
-    week_count_list = domain_dic[str(variable_num)]   
+    # week_count_list = domain_dic[str(variable_num)]   
+    week_count_list = [3, 3, 1, 1] 
 
 
     acc_of_week = []
@@ -230,25 +235,26 @@ def main(args=args, configs=configs):
 
                 ## split_data and Load the model for training
                 max_iterations = 10000  # default is 5000.
-                output_dimension, num_hidden_units = 36, 64  # here, we set as a variable for hypothesis testing below.
-                print('output_dimension: ', output_dimension)
+                output_dimension, num_hidden_units = 36, 64
+                # print('output_dimension: ', output_dimension)
+
+                train_data = 'days'
                 
                 print('------------------Day_from_{}_to_{}------------------'.format(Day_from, Day_to))
                 print('--------------------test_Day: {}------------------'.format(test_Day))
                 
-                with open('./GY-p2/data/data--long-term-decoding.pkl', 'rb') as f:
-                    len_for_each_session_trial, target_for_each_session_trial, neural_train, neural_test, label_train, label_test = pickle.load(f)
+                
+
+                with open('./GY-p2/data/data--long-term-decoding--training.pkl', 'rb') as f:
+                    len_for_each_session_trial, target_for_each_session_trial, neural_train, label_train = pickle.load(f)
+                with open(f'./GY-p2/data/data--long-term-decoding--testing-{variable_num}.pkl', 'rb') as f:
+                    neural_test, label_test = pickle.load(f)
                 
                 add_num = 0
                 add_num_to = 0
-                print(f"add_num={add_num},add_num_to={add_num_to}")
-                
-                print('neural_train_length: ', len(neural_train))
-                print('split data...finished!')
                 
                 distance = 'euclidean'
-                # distance = 'cosine'
-                print('distance: ', distance)
+                
                 # model
                 cl_dir_model = CEBRA(model_architecture='offset10-model',
                                     batch_size=512,
@@ -259,7 +265,8 @@ def main(args=args, configs=configs):
                                     max_iterations=max_iterations,
                                     distance=distance,
                                     device='cuda_if_available',
-                                    verbose=True)
+                                    verbose=True,
+                                    )
 
                 path__dimReduceModel = path__dimReduced + '/cl_dir_model_dim_' + distance + '_' + str(output_dimension) + '_' + str(max_iterations) + '_GY-p2_crossday_expect_bin_' + str(expect_num_bins) + '_Day_from_' + str(Day_from) + '_to_' + str(Day_to) + '_' + 'add_' + str(Day_from + add_num) + '_' + str(Day_to + add_num_to) + '_' + str(test_Day) + today + '_' + data_from_to + '.pt'
 

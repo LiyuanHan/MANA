@@ -56,13 +56,14 @@ parser.add_argument('--wd', '--weight-decay', default=5e-4, type=float)
 parser.add_argument('-bm', '--bn-momentum', type=float, default=0.1, help="the batchnorm momentum parameter")
 parser.add_argument("--gpu", default="0", type=str, metavar='GPU plans to use', help='The GPU id plans to use')
 
-# parser.add_argument('--variable_num', type=int, help='A numerical parameter')
+parser.add_argument('--variable_num', type=int, help='test day index')
 parser.add_argument('--mix_length', default=28, type=int)
 parser.add_argument('--time_window', default=10, type=int)
 # parser.add_argument('--cross_week_num', type=float)
 args = parser.parse_args()
 
-variable_num = 24
+variable_num = args.variable_num
+assert (variable_num in [24, 25, 26, 28, 29, 31, 36]), "Acceptable values for variable_num are 24, 25, 26, 28, 29, 31, and 36"
 
 mix_length = args.mix_length
 time_window = args.time_window
@@ -101,7 +102,8 @@ save_domain = save_weight_hidden_state__domain
 
 name__model_type = 'MANAANN'
 
-path__loadData = './GY-p2/data'
+# path__loadData = './GY-p2/data'
+path__loadData = '/home/hanly/Multiscale_SNN_Code/cerba_proc/GY-p2_20221101_20230911'
 
 base_path = "./GY-p2/long-term-decoding"
 
@@ -116,6 +118,7 @@ path__save_loss = path__results + '/loss'
 path__stdEmbeddings = base_path + '/standard_embedding'
 
 path_subpath__modelName = f'/MANAANN'
+
 
 
 print(f"long-term-decoding")
@@ -162,18 +165,18 @@ def main(args=args, configs=configs):
     bin_method = 'expect_bins'
     expect_num_bins = 50
 
-    # if bin_method == 'expect_bins':
+    if bin_method == 'expect_bins':
 
-    #     all_micro_spikes_concat = torch.load(path__loadData + '/all_micro_spikes_expect_bin_' + str(expect_num_bins) + '_concat_gy-p2_' + data_from_to + '.pt')
-    #     all_macro_conditions_concat = torch.load(path__loadData + '/all_macro_conditions_expect_' + str(expect_num_bins) + '_concat_gy-p2_' + data_from_to + '.pt')
+        all_micro_spikes_concat = torch.load(path__loadData + '/all_micro_spikes_expect_bin_' + str(expect_num_bins) + '_concat_gy-p2_' + data_from_to + '.pt')
+        all_macro_conditions_concat = torch.load(path__loadData + '/all_macro_conditions_expect_' + str(expect_num_bins) + '_concat_gy-p2_' + data_from_to + '.pt')
         
-    #     len_for_each_session_trial = torch.load(path__loadData + '/len_for_each_session_trial_expect_' + str(expect_num_bins) + '_concat_gy-p2_' + data_from_to + '.pt')
-    #     target_for_each_session_trial = torch.load(path__loadData + '/target_for_each_session_trial_expect_' + str(expect_num_bins) + '_concat_gy-p2_' + data_from_to + '.pt')
+        len_for_each_session_trial = torch.load(path__loadData + '/len_for_each_session_trial_expect_' + str(expect_num_bins) + '_concat_gy-p2_' + data_from_to + '.pt')
+        target_for_each_session_trial = torch.load(path__loadData + '/target_for_each_session_trial_expect_' + str(expect_num_bins) + '_concat_gy-p2_' + data_from_to + '.pt')
         
-    #     # 1-8 ==> 0-7
-    #     all_macro_conditions_concat = all_macro_conditions_concat - torch.tensor(1)
-    #     for i in range(len(target_for_each_session_trial)):
-    #         target_for_each_session_trial[i] = (np.array(target_for_each_session_trial[i]) - 1).tolist()
+        # 1-8 ==> 0-7
+        all_macro_conditions_concat = all_macro_conditions_concat - torch.tensor(1)
+        for i in range(len(target_for_each_session_trial)):
+            target_for_each_session_trial[i] = (np.array(target_for_each_session_trial[i]) - 1).tolist()
 
     # cross-week setup
     verify_day_in_test_range(variable_num, cross_week_num)
@@ -181,10 +184,13 @@ def main(args=args, configs=configs):
 
 
     seed_set = np.array([31, 44, 46, 54, 59])
-    Day_from = day_from_to_dic[str(variable_num)][0] 
-    Day_to = day_from_to_dic[str(variable_num)][1]  
+    # Day_from = day_from_to_dic[str(variable_num)][0] 
+    # Day_to = day_from_to_dic[str(variable_num)][1]  
+    Day_from = 16
+    Day_to = 23
     test_Day_list = [variable_num]  
-    week_count_list = domain_dic[str(variable_num)]   
+    # week_count_list = domain_dic[str(variable_num)]   
+    week_count_list = [3, 3, 1, 1] 
 
 
     acc_of_week = []
@@ -235,19 +241,66 @@ def main(args=args, configs=configs):
                 print('------------------Day_from_{}_to_{}------------------'.format(Day_from, Day_to))
                 print('--------------------test_Day: {}------------------'.format(test_Day))
                 
-                with open('./GY-p2/data/data--long-term-decoding.pkl', 'rb') as f:
-                    len_for_each_session_trial, target_for_each_session_trial, neural_train, neural_test, label_train, label_test = pickle.load(f)
+
+
+                ### 保存新的数据
+
+                def split_data(data_spike_train, data_label, len_for_each_session_trial, Day_from, Day_to):
+                                    
+                    split_idx_start_beg = 0
+                    for i in range(day[str(Day_from - 1)]):
+                        split_idx_start_beg += sum(len_for_each_session_trial[i])
+                    split_idx_start_end = 0
+                    for i in range(day[str(Day_to)]):
+                        split_idx_start_end += sum(len_for_each_session_trial[i])
+                    
+                    split_idx_start = 0
+                    for i in range(day[str(test_Day - 1)]):
+                        split_idx_start += sum(len_for_each_session_trial[i])
+                    split_idx_end = 0  # 只预测第test_Day这一天的
+                    for i in range(day[str(test_Day)]):
+                        split_idx_end += sum(len_for_each_session_trial[i])
+                    
+                    neural_train = data_spike_train[split_idx_start_beg:split_idx_start_end, :]
+                    label_train = data_label[split_idx_start_beg:split_idx_start_end, :]
+                    
+                    neural_test = data_spike_train[split_idx_start:split_idx_end, :]
+                    label_test = data_label[split_idx_start:split_idx_end, :]
+                    return neural_train, neural_test, label_train, label_test
+                
+                # split data
+                neural_train, neural_test, label_train, label_test = split_data(all_micro_spikes_concat,
+                                                                                all_macro_conditions_concat,
+                                                                                len_for_each_session_trial, Day_from,
+                                                                                Day_to)  # direction
+
+                neural_train = neural_train.clone()
+                neural_test = neural_test.clone()
+                label_train = label_train.clone()
+                label_test = label_test.clone()
+
+                with open('./GY-p2/data/data--long-term-decoding--training.pkl', 'wb') as f:
+                    pickle.dump((len_for_each_session_trial, target_for_each_session_trial, neural_train, label_train), f)
+                with open(f'./GY-p2/data/data--long-term-decoding--testing-{variable_num}.pkl', 'wb') as f:
+                    pickle.dump((neural_test, label_test), f)
+
+                # with open(f'./GY-p2/data/data--long-term-decoding--testing-24.pkl', 'rb') as f:
+                #     neural_test_24, label_test_24 = pickle.load(f)
+
+                # print(" ")
+                # print(neural_test.shape)
+                # print((neural_test == neural_test_24).all())
+
+                with open('./GY-p2/data/data--long-term-decoding--training.pkl', 'rb') as f:
+                    len_for_each_session_trial, target_for_each_session_trial, neural_train, label_train = pickle.load(f)
+                with open(f'./GY-p2/data/data--long-term-decoding--testing-{variable_num}.pkl', 'rb') as f:
+                    neural_test, label_test = pickle.load(f)
                 
                 add_num = 0
                 add_num_to = 0
-                # print(f"add_num={add_num},add_num_to={add_num_to}")
-                
-                # print('neural_train_length: ', len(neural_train))
-                # print('split data...finished!')
                 
                 distance = 'euclidean'
-                # distance = 'cosine'
-                # print('distance: ', distance)
+                
                 # model
                 cl_dir_model = CEBRA(model_architecture='offset10-model',
                                     batch_size=512,
@@ -300,7 +353,7 @@ def main(args=args, configs=configs):
                     week_name_from_to = str(week_all[str(Day_to)])
                     print(f'week_name_from_to = {week_name_from_to}')
 
-                    with open(path__loadData + '/cl_dir_train_stard_embeddings_' + week_name_from_to + '_gy-p2.pkl', 'rb') as f:
+                    with open('./GY-p2/data/cl_dir_train_stard_embeddings_' + week_name_from_to + '_gy-p2.pkl', 'rb') as f:
                         cebra_dir_train_stard_embeddings = pickle.load(f)
                         print('load standard embeddings ...... finished!')
                     
