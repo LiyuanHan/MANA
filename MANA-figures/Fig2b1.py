@@ -47,11 +47,6 @@ for i, _ in enumerate(mixlen_list):
 	acc_std__SNN.append(std_over_seeds_of_stat_over_variables_of_acc__SNN_of_mixlen)
 
 
-# print("ANN:", acc_median__ANN)
-# print("SNN:", acc_median__SNN)
-# print(" ")
-
-
 fig, ax = plt.subplots()
 x_trials_A = [i + 0.8 for i in range(mixlen_total)]
 x_trials_S = [i + 1.2 for i in range(mixlen_total)]
@@ -81,6 +76,6 @@ plt.xlabel('Trials/day for fine-tuning')
 plt.ylabel('Accuracy (%)')
 
 path__savefig = './figs/Fig2b1.pdf'
-plt.savefig(path__savefig, format='pdf')
-
+plt.savefig(path__savefig,format='pdf', bbox_inches='tight')
+plt.show()
 

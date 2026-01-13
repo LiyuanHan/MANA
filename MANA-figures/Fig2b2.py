@@ -33,6 +33,7 @@ for model_category in ["MANAANN", "MANASNN"]:
 
     import pandas as pd
     import scipy
+    from scipy import stats
 
     pd_data_dict = dict()
     p_val_dict = dict()
@@ -56,7 +57,7 @@ for model_category in ["MANAANN", "MANASNN"]:
 
     for train_weeks in other_train_weeks_list:
         idx = 0 if train_weeks < default_train_weeks else 1
-        t_stat, p_val = scipy.stats.ttest_rel(pd_data_dict[default_train_weeks][idx]['value'], pd_data_dict[train_weeks]['value'])
+        t_stat, p_val = stats.ttest_rel(pd_data_dict[default_train_weeks][idx]['value'], pd_data_dict[train_weeks]['value'])
         p_val_dict[train_weeks] = (p_val / 2) if t_stat > 0 else (1 - p_val / 2)
 
 

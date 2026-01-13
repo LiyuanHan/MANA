@@ -1,3 +1,6 @@
+import scipy
+from scipy import stats
+import pandas as pd
 import numpy as np
 import os
 import sys
@@ -71,8 +74,7 @@ for phase in ["1", "2"]:
 
     # p-value
 
-    import pandas as pd
-    import scipy
+
 
     pd_data_dict = dict()
     p_val_dict = {
@@ -87,7 +89,7 @@ for phase in ["1", "2"]:
         })
     for mana_model in ["MANAANN", "MANASNN"]:
         for model in models_list[:-2]:
-            t_stat, p_val = scipy.stats.ttest_rel(pd_data_dict[mana_model]['value'], pd_data_dict[model]['value'],)
+            t_stat, p_val = stats.ttest_rel(pd_data_dict[mana_model]['value'], pd_data_dict[model]['value'],)
             p_val_dict[mana_model][model] = (p_val / 2) if t_stat > 0 else (1 - p_val / 2)
 
     # sns boxplot

@@ -21,7 +21,7 @@ length = 15
 models_list = [
     "MLP", 
     "GRU", 
-    "Transformer",
+    "Transformer_1layer",
     "CCA",
     "stabilization",
     "CEBRA", 
@@ -33,7 +33,7 @@ models_list = [
 models_label_dict = {
     "MLP": "MLP",
     "GRU": "GRU",
-    "Transformer": "Transformer",
+    "Transformer_1layer": "Transformer",
     "CCA": "CCA",
     "stabilization": "Stabilization",
     "CEBRA": "CEBRA",
@@ -46,7 +46,7 @@ models_label_list = [models_label_dict[model] for model in models_list]
 colors_dict = {
     "MLP": '#33a9ff33', 
     "GRU": '#6baed680', 
-    "Transformer": '#4292c6CD', 
+    "Transformer_1layer": '#4292c6CD', 
     "CCA": "#f5e5f8CD", 
     "stabilization": "#dbccf2", 
     "CEBRA": "#c7bff7", 
@@ -70,6 +70,7 @@ with open('data/' + data_name + '.pkl', 'rb') as f:
 
 import pandas as pd
 import scipy
+from scipy import stats
 
 mana_models_list = list(filter(lambda model: "MANA" in model, models_list))
 
@@ -83,7 +84,7 @@ for model in models_list:
     })
 for mana_model in mana_models_list:
     for model in models_list[:-2]:
-        t_stat, p_val = scipy.stats.ttest_rel(pd_data_dict[mana_model]['value'], pd_data_dict[model]['value'],)
+        t_stat, p_val = stats.ttest_rel(pd_data_dict[mana_model]['value'], pd_data_dict[model]['value'],)
         p_val_dict[mana_model][model] = (p_val / 2) if t_stat > 0 else (1 - p_val / 2)
 
 # sns boxplot
