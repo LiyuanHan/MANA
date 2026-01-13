@@ -272,7 +272,7 @@ It also has the ``--variable`` argument.
 
 # Plotting figures
 
-Because the data required to generate Fig.3b、c、d is too large to upload to GitHub, it is provided via Google Drive instead (**https://drive.google.com/drive/folders/1bUp7f4ajYvDBFQuwpgaul8c0koIb-FeN?usp=sharing**). Please download the Fig3bcd folder and place it under ``your_path/MANA-figures/data/``
+Because the data required to generate Fig.3b、c、d is too large to upload to GitHub, it is provided via Google Drive instead (**https://drive.google.com/drive/folders/1bUp7f4ajYvDBFQuwpgaul8c0koIb-FeN?usp=sharing**). Please download the **Fig3bcd** folder and place it under ``your_path/MANA-figures/data/``
 
 Commands for running:
 
