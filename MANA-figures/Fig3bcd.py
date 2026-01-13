@@ -1,8 +1,13 @@
+'''
+MANA-figures.Fig3bcd:
+Because the data required to generate Fig.3b、c、d is too large to upload to GitHub, it is provided via Google Drive instead (https://drive.google.com/drive/folders/1bUp7f4ajYvDBFQuwpgaul8c0koIb-FeN?usp=sharing). Please download the Fig3bcd folder and place it under your_path/MANA-figures/data/, then run: python Fig3bcd.py
+'''
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from sklearn.manifold import TSNE
 import torch
+
 
 turn = 0
 # testDay = 24 # 1st phase
