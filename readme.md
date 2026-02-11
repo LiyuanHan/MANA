@@ -321,4 +321,6 @@ python FigXX.py
 You will find individual **.py** scripts corresponding to each figure.
 
 > **Outputs**: generated figures will be saved under **MANA-figures/figs/**.
+>
+>
 > **Expected runtime**: ~1–10 minutes per figure on a normal desktop computer.
