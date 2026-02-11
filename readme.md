@@ -14,7 +14,34 @@ Finally, an **unsupervised adaptation strategy** continuously fine-tuned the dec
 
 We evaluated the performance of MANA on BCI and AI tasks.
 
-**Ps: To run this code, please download first and then run it in a Conda environment!**
+***Ps: To run this code, please download first and then run it in a Conda environment!***
+
+# System requirement
+
+- **Operating system**: Ubuntu 20.04.5 LTS (focal)
+- **Python**: 3.10.13
+- **Hardware:**
+  - CPU version supported.
+  - **GPU (optional, recommended for speed)**: NVIDIA GPU with CUDA 11.8
+- **Tested environment**:
+  - Ubuntu 20.04.5 LTS + Python 3.10.13
+  - PyTorch 2.1.2 + CUDA 11.8 (**torch==2.1.2+cu118**, **torchvision==0.16.2+cu118**, **torchaudio==2.1.2+cu118**)
+
+# Installation
+
+We recommend installing dependencies via **pip** in a clean Python (>=3.10) environment.
+
+```bash
+conda create -n paper python=3.10 -y
+conda activate paper
+pip install -r requirements.txt
+```
+
+> **Typical install time**: ~30–45 minutes on a normal desktop computer (depending on network speed and whether CUDA-enabled PyTorch wheels need to be downloaded).
+>
+> **Typical install problem**: If you encounter problems with torch installation, select the corresponding command according to the PyTorch official website
+>
+> **CPU selected**: If your machine does not have an NVIDIA GPU or CUDA, you may install the CPU-only version of PyTorch instead, but runtime may be slower.
 
 # GY-reaching task
 
@@ -61,6 +88,10 @@ The process of running .py file:
   python GY-p2/long-term-decoding/MANA-ANN.py --variable_num XXX --mix_length XXX
   ```
 
+> **Outputs**: results will be saved to `GY-p2/long-term-decoding/res/`.
+>
+> **Expected runtime (demo)**: ~20–30 minutes per random seed (total 5) with GPU (CUDA 11.8) for training the Network Decoder on a normal desktop computer. ~5 minutes for testing.
+
 ### MANA-SNN
 
 Commands for running:
@@ -71,6 +102,10 @@ python GY-p2/long-term-decoding/MANA-SNN.py --variable_num XXX
 ```
 
 It also has the ``--mix_length`` argument.
+
+> **Outputs**: results will be saved to `GY-p2/long-term-decoding/res/`.
+>
+> **Expected runtime (demo)**: ~30–40 minutes per random seed (total 5) with GPU (CUDA 11.8) for training the Network Decoder on a normal desktop computer. ~5 minutes for testing.
 
 ## Daily decoding
 
@@ -270,11 +305,13 @@ python AI-tasks/dvsgesture/MANA-SNN/MANA-SNN.py
 
 It also has the ``--variable`` argument.
 
-# Plotting figures
+# Plotting figures (reproducibility)
 
-Because the data required to generate Fig.3b、c、d is too large to upload to GitHub, it is provided via Google Drive instead (**https://drive.google.com/drive/folders/1bUp7f4ajYvDBFQuwpgaul8c0koIb-FeN?usp=sharing**). Please download the **Fig3bcd** folder and place it under ``your_path/MANA-figures/data/``
+Because the data required to generate **Fig.3b-d** is too large to upload to GitHub, it is provided via Google Drive instead (**https://drive.google.com/drive/folders/1bUp7f4ajYvDBFQuwpgaul8c0koIb-FeN?usp=sharing**).
 
-Commands for running:
+1) Download the folder **Fig3bcd** and place it at:
+   `your_path/MANA-figures/data/`
+2) Run the figure scripts:
 
 ```bash
 cd .../your_path/MANA-figures
@@ -282,3 +319,5 @@ python FigXX.py
 ```
 
 You will find individual **.py** scripts corresponding to each figure.
+
+**Outputs**: generated figures will be saved under **MANA-figures/figs/**.
