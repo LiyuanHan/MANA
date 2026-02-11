@@ -29,7 +29,9 @@ We evaluated the performance of MANA on BCI and AI tasks.
 
 # Installation
 
-We recommend installing dependencies via **pip** in a clean Python (>=3.10) environment.
+We recommend installing dependencies via **pip** in a clean Python (>=3.10) environment. 
+
+* Dependencies: all Python dependencies are listed in requirements.txt.
 
 ```bash
 conda create -n paper python=3.10 -y
@@ -311,7 +313,7 @@ Because the data required to generate **Fig.3b-d** is too large to upload to Git
 
 1) Download the folder **Fig3bcd** and place it at:
    `your_path/MANA-figures/data/`
-2) Run the corresponding script for each figure (e.g., **python Fig3b.py**).:
+2) Run the corresponding script for each figure (e.g., **python Fig3b.py**):
 
 ```bash
 cd .../your_path/MANA-figures
