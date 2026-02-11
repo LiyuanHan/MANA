@@ -88,7 +88,7 @@ The process of running .py file:
   python GY-p2/long-term-decoding/MANA-ANN.py --variable_num XXX --mix_length XXX
   ```
 
-> **Outputs**: results will be saved to `GY-p2/long-term-decoding/res/`.
+> **Outputs**: decoding results will be saved to `GY-p2/long-term-decoding/res/`.
 >
 > **Expected runtime (demo)**: ~20–30 minutes per random seed (total 5) with GPU (CUDA 11.8) for training the Network Decoder on a normal desktop computer. ~5 minutes for testing.
 
@@ -103,7 +103,7 @@ python GY-p2/long-term-decoding/MANA-SNN.py --variable_num XXX
 
 It also has the ``--mix_length`` argument.
 
-> **Outputs**: results will be saved to `GY-p2/long-term-decoding/res/`.
+> **Outputs**: decoding results will be saved to `GY-p2/long-term-decoding/res/`.
 >
 > **Expected runtime (demo)**: ~30–40 minutes per random seed (total 5) with GPU (CUDA 11.8) for training the Network Decoder on a normal desktop computer. ~5 minutes for testing.
 
@@ -311,7 +311,7 @@ Because the data required to generate **Fig.3b-d** is too large to upload to Git
 
 1) Download the folder **Fig3bcd** and place it at:
    `your_path/MANA-figures/data/`
-2) Run the figure scripts:
+2) Run the corresponding script for each figure (e.g., **python Fig3b.py**).:
 
 ```bash
 cd .../your_path/MANA-figures
@@ -320,4 +320,5 @@ python FigXX.py
 
 You will find individual **.py** scripts corresponding to each figure.
 
-**Outputs**: generated figures will be saved under **MANA-figures/figs/**.
+> **Outputs**: generated figures will be saved under **MANA-figures/figs/**.
+> **Expected runtime**: ~1–10 minutes per figure on a normal desktop computer.
